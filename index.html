@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11111b">
+  <title>TaskNova — Plan. Focus. Achieve.</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="TaskNova home">
+        <span class="brand-mark">✓</span><span><strong>TaskNova</strong><small>PLAN · FOCUS · ACHIEVE</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-view="today"><span>◷</span> Today <b id="todayCount" class="nav-count">0</b></button>
+        <button class="nav-item" data-view="upcoming"><span>▦</span> Upcoming</button>
+        <button class="nav-item" data-view="calendar"><span>▣</span> Calendar</button>
+        <button class="nav-item" data-view="habits"><span>✳</span> Habits</button>
+        <button class="nav-item" data-view="focus"><span>◉</span> Focus timer</button>
+      </nav>
+      <div class="nav-label category-label">CATEGORIES <button id="addCategoryBtn" class="icon-button" title="Add category">+</button></div>
+      <div id="categoryNav" class="category-nav"></div>
+      <div class="sidebar-bottom">
+        <div class="streak-card"><span class="streak-icon">✦</span><div><strong id="streakValue">0 day streak</strong><small>Small steps add up.</small></div></div>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
+        <div class="profile"><div class="avatar">N</div><div><strong>Nova User</strong><small>Personal workspace</small></div><span class="online-dot"></span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button id="mobileMenuBtn" class="icon-button mobile-menu" aria-label="Open menu">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-sep">/</span><strong id="pageCrumb">Dashboard</strong></div>
+        <div class="top-actions">
+          <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search tasks..." aria-label="Search tasks"><kbd>⌘ K</kbd></label>
+          <button id="themeBtn" class="icon-button" title="Toggle theme" aria-label="Toggle theme">☼</button>
+          <button id="headerAddBtn" class="primary-btn"><span>＋</span> New task</button>
+        </div>
+      </header>
+
+      <section id="dashboardView" class="view active-view">
+        <div class="welcome-row">
+          <div><p class="eyebrow" id="dateLabel">YOUR PRODUCTIVITY SPACE</p><h1 id="greeting">Good morning, let's make it count <span>✦</span></h1><p class="muted">A little progress each day adds up to big results.</p></div>
+          <div class="welcome-actions"><button class="secondary-btn" id="exportBtn">↧ Export</button><button class="primary-btn" id="welcomeAddBtn">＋ Add a task</button></div>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total tasks</span><span class="stat-icon violet">▤</span></div><strong id="totalStat">0</strong><small><span class="positive">↗</span> In your workspace</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Completed</span><span class="stat-icon green">✓</span></div><strong id="completedStat">0</strong><small id="completedCaption">Keep up the momentum</small></article>
+          <article class="stat-card"><div class="stat-top"><span>In progress</span><span class="stat-icon blue">◷</span></div><strong id="pendingStat">0</strong><small>Tasks left to tackle</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Overdue</span><span class="stat-icon orange">!</span></div><strong id="overdueStat">0</strong><small>Time to review these</small></article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel task-panel">
+            <div class="panel-heading"><div><h2>Today's focus</h2><p class="muted">Make space for what matters.</p></div><button class="text-btn" data-open-view="today">View all ↗</button></div>
+            <div class="progress-summary"><div class="progress-ring" id="progressRing"><div><strong id="progressPercent">0%</strong><small>complete</small></div></div><div class="progress-copy"><strong id="progressHeadline">Your day is a blank canvas.</strong><p id="progressText" class="muted">Add a task and get started.</p><div class="mini-progress"><span id="progressBar"></span></div></div></div>
+            <div id="dashboardTaskList" class="task-list"></div>
+            <div id="dashboardEmpty" class="empty-state"><div class="empty-illustration">✦</div><strong>Nothing on your list yet</strong><p>Add your first task and build some momentum.</p><button class="primary-btn" data-add-task>＋ Create a task</button></div>
+          </section>
+          <section class="panel side-panel">
+            <div class="panel-heading"><div><h2>Weekly progress</h2><p class="muted">Your last 7 days</p></div><span class="soft-badge">THIS WEEK</span></div>
+            <div class="chart-wrap"><div id="weeklyChart" class="bar-chart" aria-label="Weekly completed tasks chart"></div></div>
+            <div class="chart-legend"><span><i></i> Completed tasks</span><strong id="weeklyTotal">0 total</strong></div>
+            <div class="panel-divider"></div>
+            <div class="panel-heading habit-heading"><div><h2>Daily habits</h2><p class="muted">Little wins, every day.</p></div><button class="text-btn" data-open-view="habits">Manage ↗</button></div>
+            <div id="habitPreview" class="habit-preview"></div>
+          </section>
+        </div>
+        <section class="panel bottom-panel"><div class="panel-heading"><div><h2>Quick capture</h2><p class="muted">Get it out of your head and onto your list.</p></div></div><form id="quickTaskForm" class="quick-form"><input id="quickTaskInput" required maxlength="120" placeholder="What do you need to get done?" aria-label="Quick task title"><select id="quickPriority" aria-label="Task priority"><option value="medium">Medium priority</option><option value="high">High priority</option><option value="low">Low priority</option></select><button class="primary-btn" type="submit">Add task <span>↗</span></button></form></section>
+      </section>
+
+      <section id="tasksView" class="view">
+        <div class="page-title-row"><div><p class="eyebrow">YOUR WORKSPACE</p><h1 id="tasksTitle">Today's tasks</h1><p class="muted" id="tasksSubtitle">One thing at a time.</p></div><button class="primary-btn" data-add-task>＋ New task</button></div>
+        <div class="filter-toolbar"><div class="filter-tabs" id="filterTabs"><button class="filter-tab selected" data-filter="all">All tasks</button><button class="filter-tab" data-filter="active">In progress</button><button class="filter-tab" data-filter="completed">Completed</button></div><div class="filter-right"><select id="priorityFilter" aria-label="Filter by priority"><option value="all">All priorities</option><option value="high">High priority</option><option value="medium">Medium priority</option><option value="low">Low priority</option></select><select id="sortSelect" aria-label="Sort tasks"><option value="due">Sort: Due date</option><option value="priority">Sort: Priority</option><option value="created">Sort: Recently added</option><option value="title">Sort: Name</option></select></div></div>
+        <div id="taskPageList" class="task-page-list"></div>
+        <div id="taskPageEmpty" class="empty-state panel"><div class="empty-illustration">✦</div><strong>No tasks found</strong><p>Try another filter or add a new task.</p><button class="primary-btn" data-add-task>＋ Create a task</button></div>
+      </section>
+
+      <section id="calendarView" class="view">
+        <div class="page-title-row"><div><p class="eyebrow">PLAN AHEAD</p><h1>Calendar</h1><p class="muted">See your workload at a glance.</p></div><button class="primary-btn" data-add-task>＋ New task</button></div>
+        <div class="calendar-layout"><section class="panel calendar-panel"><div class="calendar-controls"><button id="prevMonth" class="icon-button" aria-label="Previous month">‹</button><h2 id="calendarMonth">Month Year</h2><button id="nextMonth" class="icon-button" aria-label="Next month">›</button><button id="todayMonth" class="secondary-btn">Today</button></div><div class="calendar-weekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div id="calendarGrid" class="calendar-grid"></div></section><section class="panel selected-day-panel"><p class="eyebrow">SELECTED DAY</p><h2 id="selectedDayTitle">Tasks for today</h2><div id="selectedDayTasks" class="task-list"></div><button class="secondary-btn full-width" id="addSelectedDayTask">＋ Add task for this day</button></section></div>
+      </section>
+
+      <section id="habitsView" class="view">
+        <div class="page-title-row"><div><p class="eyebrow">BUILD YOUR ROUTINE</p><h1>Habit tracker</h1><p class="muted">Consistency beats intensity. Track the small wins.</p></div><button id="addHabitBtn" class="primary-btn">＋ New habit</button></div>
+        <div class="habit-summary-grid"><article class="stat-card"><div class="stat-top"><span>Active habits</span><span class="stat-icon violet">✳</span></div><strong id="habitCountStat">0</strong><small>Habits you're building</small></article><article class="stat-card"><div class="stat-top"><span>Done today</span><span class="stat-icon green">✓</span></div><strong id="habitDoneStat">0</strong><small>Keep the streak alive</small></article><article class="stat-card"><div class="stat-top"><span>Daily completion</span><span class="stat-icon blue">↗</span></div><strong id="habitRateStat">0%</strong><small>One day at a time</small></article></div>
+        <div id="habitsList" class="habits-list"></div>
+      </section>
+
+      <section id="focusView" class="view">
+        <div class="focus-intro"><p class="eyebrow">DEEP WORK MODE</p><h1>Make room for focus.</h1><p class="muted">One task, one session, no distractions.</p></div>
+        <div class="focus-layout"><section class="panel focus-card"><div class="focus-mode-tabs"><button class="focus-mode active" data-minutes="25">Focus · 25 min</button><button class="focus-mode" data-minutes="5">Short break · 5 min</button><button class="focus-mode" data-minutes="15">Long break · 15 min</button></div><div class="timer-ring" id="timerRing"><div><span id="timerDisplay">25:00</span><small id="timerStatus">READY TO FOCUS</small></div></div><div class="timer-controls"><button id="resetTimer" class="secondary-btn">↺ Reset</button><button id="startTimer" class="primary-btn timer-start">▶ Start focus</button><button id="skipTimer" class="secondary-btn">Skip ↗</button></div><p class="muted timer-note">Tip: choose one task before starting your session.</p></section><section class="panel focus-task-panel"><div class="panel-heading"><div><h2>Choose your focus</h2><p class="muted">Pick a task to work on.</p></div></div><div id="focusTaskList" class="task-list"></div><div id="focusEmpty" class="empty-state compact-empty"><strong>No active tasks</strong><p>Add a task to start a focus session.</p><button class="primary-btn" data-add-task>＋ New task</button></div><div class="focus-sessions"><span class="stat-icon violet">◉</span><div><strong id="sessionCount">0 focus sessions</strong><small>Sessions completed in this visit</small></div></div></section></div>
+      </section>
+
+      <section id="settingsView" class="view">
+        <div class="page-title-row"><div><p class="eyebrow">MAKE IT YOURS</p><h1>Settings</h1><p class="muted">Manage your preferences and data.</p></div></div>
+        <section class="panel settings-panel"><div class="settings-row"><div><strong>Appearance</strong><p class="muted">Switch between dark and light themes.</p></div><button id="settingsThemeBtn" class="secondary-btn">Toggle theme</button></div><div class="settings-row"><div><strong>Export your data</strong><p class="muted">Download tasks and habits as a JSON backup.</p></div><button id="settingsExportBtn" class="secondary-btn">Export JSON ↧</button></div><div class="settings-row"><div><strong>Import backup</strong><p class="muted">Restore a TaskNova JSON backup.</p></div><label class="secondary-btn file-label">Choose file<input type="file" id="importInput" accept="application/json,.json" hidden></label></div><div class="settings-row danger-row"><div><strong>Reset all app data</strong><p class="muted">Permanently remove tasks and habits from this browser.</p></div><button id="resetDataBtn" class="danger-btn">Reset data</button></div><p class="settings-footnote">TaskNova stores data locally in this browser. Clearing browser data or using another device will not sync your tasks.</p></section>
+      </section>
+
+      <footer class="app-footer"><span>✦ TaskNova</span><span>Made for better days · Your data stays in your browser</span></footer>
+    </main>
+  </div>
+
+  <div id="taskModal" class="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header"><div><p class="eyebrow">TASK DETAILS</p><h2 id="modalTitle">Create a task</h2></div><button id="closeModal" class="icon-button" aria-label="Close dialog">×</button></div>
+      <form id="taskForm">
+        <input type="hidden" id="taskId">
+        <label class="form-field full-field"><span>Task title *</span><input id="taskTitle" required maxlength="120" placeholder="e.g. Finish project documentation"></label>
+        <label class="form-field full-field"><span>Description</span><textarea id="taskDescription" rows="3" maxlength="600" placeholder="Add a little context..."></textarea></label>
+        <div class="form-two-col"><label class="form-field"><span>Priority</span><select id="taskPriority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select></label><label class="form-field"><span>Category</span><select id="taskCategory"><option>Personal</option><option>Work</option><option>Study</option><option>Health</option><option>Other</option></select></label></div>
+        <div class="form-two-col"><label class="form-field"><span>Due date</span><input id="taskDueDate" type="date"></label><label class="form-field"><span>Due time</span><input id="taskDueTime" type="time"></label></div>
+        <div class="modal-actions"><button type="button" id="cancelModal" class="secondary-btn">Cancel</button><button type="submit" class="primary-btn">Save task <span>↗</span></button></div>
+      </form>
+    </section>
+  </div>
+
+  <div id="habitModal" class="modal-backdrop" hidden><section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="habitModalTitle"><div class="modal-header"><div><p class="eyebrow">SMALL WINS</p><h2 id="habitModalTitle">Create a habit</h2></div><button id="closeHabitModal" class="icon-button" aria-label="Close dialog">×</button></div><form id="habitForm"><label class="form-field full-field"><span>Habit name *</span><input id="habitName" required maxlength="70" placeholder="e.g. Read for 20 minutes"></label><label class="form-field full-field"><span>Icon</span><select id="habitIcon"><option value="✦">✦ Sparkle</option><option value="◈">◈ Read</option><option value="❋">❋ Exercise</option><option value="☼">☼ Wellness</option><option value="⌁">⌁ Learning</option></select></label><div class="modal-actions"><button type="button" id="cancelHabitModal" class="secondary-btn">Cancel</button><button type="submit" class="primary-btn">Add habit</button></div></form></section></div>
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>
